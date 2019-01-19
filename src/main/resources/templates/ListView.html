@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>ショッピングサイト(仮)</title>
+</head>
+<body>
+  <h3>選択商品一覧</h3>
+  <hr>
+  <br />
+  <th:block th:if="${message} and ''!=${message}"><font color="red">[[${message}]]</font>
+  </th:block>
+  <p></p>
+  <form method="POST" action="ShoppingCart">
+  <div align="right">
+  表示順：
+  <select name="sort_type" style="width: 100px ; height: 28px">
+     <option value="1" th:selected="${session['sort_type']} == 1">安い順</option>
+     <option value="2" th:selected="${session['sort_type']} == 2">高い順</option>
+  </select>
+  <input type="submit" value="並び替え">
+  <input type="hidden" name="sort_button" value="sort">
+  </div>
+  </form>
+  <p></p>
+  <div align="center">
+  <table border="1">
+      <tr>
+        <th>商品名</th>
+        <th>金額</th>
+        <th>個数</th>
+      </tr>
+
+      <tr th:each="itemlist : ${itemlist}">
+        <form action="#" th:action="@{/ShoppingCart}" th:object="${ListForm}" method="post">
+          <td>
+          <img width="150" height="150" th:src="@{${'/images/' + itemlist.getitemName()} + '.jpg'}"></img>
+          [[${itemlist.getitemName()}]]
+          </td>
+          <td>\ [[${itemlist.getitemPrice()}]]</td>
+          <td><select name="kosu">
+              <option value="">---</option>
+              <option th:each="item : ${kosu_list}" th:value="${item.value}" th:text="${item.value}">pulldown</option>
+              </select>
+          </td>
+          <td>
+            <input type="hidden" name="name" th:value="${itemlist.getitemName()}">
+            <input type="hidden" name="price" th:value="${itemlist.getitemPrice()}">
+            <input type="submit" name="cart" value="カートに追加">
+          </td>
+        </form>
+      </tr>
+  </table>
+  </div>
+  <br />
+</body>
+</html>

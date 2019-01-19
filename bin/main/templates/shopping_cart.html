@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>ショッピングサイト(仮)</title>
+</head>
+
+<style type="text/css">
+.button1 {
+  display       : inline-block;
+  border-radius : 5%;          /* 角丸       */
+  font-size     : 12pt;        /* 文字サイズ */
+  text-align    : center;      /* 文字位置   */
+  cursor        : pointer;     /* カーソル   */
+  padding       : 12px 12px;   /* 余白       */
+  background    : #ff7f00;     /* 背景色     */
+  color         : #ffffff;     /* 文字色     */
+  line-height   : 1em;         /* 1行の高さ  */
+  transition    : .3s;         /* なめらか変化 */
+}
+
+
+.cart{
+}
+
+</style>
+
+<body>
+
+<div>
+<h3>ショッピングカート</h3>
+<div>
+
+<br />
+
+<div style="float : left">
+  <p></p>
+  <th:block th:if="${message} and ''!=${message}"><font color="red">[[${message}]]</font>
+  </th:block>
+  <br>
+  <table>
+      <tr>
+        <th width="180"><!-- 画像列 --></th>
+        <th width="400">商品名</th>
+        <th width="200" align="left">価格</th>
+        <th width="60" align="right">数量</th>
+      </tr>
+
+      <!-- 商品ごとのループ START -->
+
+      <tr th:each="orderlist : ${session['orderList']}">
+        <!-- 画像 -->
+        <td>&nbsp;&nbsp;&nbsp;<img width="150" height="150"
+                 th:src="@{${'/images/' + orderlist.item.getitemName()} + '.jpg'}"
+                  ></img>
+        </td>
+
+        <!-- 商品名 -->
+        <td width="400" valign="top" align="left">
+        [[${orderlist.item.getitemName()}]]<br>
+        <br>
+        <form action="#" th:action="@{/ShoppingCart}" th:object="${DeleteForm}" method="post">
+          <input type="hidden"   name="index" th:value="${orderlist.index}">
+          <input type="submit" class="cart" name="cart" value="削除">
+        </form>
+        </td>
+
+        <!-- 価格 (単価×数量) -->
+        <td width="200" valign="top"><font color="red">\ [[${orderlist.item.getitemPrice()} * ${orderlist.num}]]</font></td>
+
+        <!-- 数量 商品一覧で選択した個数が初期表示で表示されていること -->
+        <td valign="top" align="right"><select name="kosu">
+           <option th:each="kosu : ${kosu_list}"
+                   th:value="${kosu.value}"
+                   th:selected="${orderlist.num} == ${kosu.value}">[[${kosu.value}]]</option>
+        </select>
+        </td>
+
+      </tr>
+
+      <!-- 商品ごとのループ END -->
+
+      <tr><td colspan="4" align="right">小計（[[${session['tensu']}]]点）：<font color="red">\ [[${session['total_price']}]] </font></td></tr>
+  </table>
+
+<hr width="98%">
+
+</div>
+
+<div align="center">
+<br>
+<br>
+<input type="submit" value="レジに進む" class="button1"> <br>
+
+
+</div>
+
+<form method="POST" action="ShoppingCart">
+
+<div style="clear: both">
+<input type="submit" name="cart" value="商品一覧に戻る">
+</div>
+
+</form>
+
+</body>
+
+</html>
